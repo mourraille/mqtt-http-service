@@ -1,6 +1,8 @@
 const mqtt = require('mqtt');
 const https = require('https');
 var nodemailer = require('nodemailer');
+var env = require('./env.js');
+
 
 var client  = mqtt.connect("mqtt://raspberrypi", null);
 client.on("connect",function() {	
@@ -10,21 +12,24 @@ client.subscribe("mailbox");
 var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-           user: 'mauricio.mourraille@ucrso.info',
-           pass: ''
+           user: env.EMAIL,
+           pass: env.PASSWORD
        }
    });
 
    const mailOptions = {
-    from: 'mauricio.mourraille@ucrso.info', // sender address
-    to: 'mourraille@me.com,knajjars@gmail.com', // list of receivers
-    subject: "You've got mail! ", // Subject line
-    html: '<p>You' +'\'ve got mail 📩 !    -> ' + new Date() +'</p>'// plain text body
+    from: env.EMAIL, // sender address
+    to: env.RECIPIENTS, // list of receivers
+    subject: "You've got mail! " // Subject line
+    // plain text body
+    
   };
 
 client.on('message',function(topic, message, packet) {
     console.log("You've got mail 📩     ->" + new Date());
+    console.log(mailOptions.from);
 
+    mailOptions.html = '<p>You' +'\'ve got mail 📩 !    -> ' + new Date() +'</p>'
     transporter.sendMail(mailOptions, function (err, info) {
         if(err)
           console.log(err)
