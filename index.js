@@ -18,18 +18,18 @@ var transporter = nodemailer.createTransport({
    });
 
    const mailOptions = {
-    from: env.EMAIL, // sender address
+    from:  new Date(), // sender address
     to: env.RECIPIENTS, // list of receivers
     subject: "You've got mail! " // Subject line
     // plain text body
-    
   };
+
 
 client.on('message',function(topic, message, packet) {
     console.log("You've got mail 📩     ->" + new Date());
     console.log(mailOptions.from);
 
-    mailOptions.html = '<p>You' +'\'ve got mail 📩 !    -> ' + new Date() +'</p>'
+    mailOptions.html = '<p>\n-> ' + new Date() +'</p>'
     transporter.sendMail(mailOptions, function (err, info) {
         if(err)
           console.log(err)
